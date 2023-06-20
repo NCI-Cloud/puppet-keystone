@@ -231,53 +231,45 @@ define keystone::resource::authtoken(
   $username,
   $password,
   $auth_url,
-  $project_name                   = $::os_service_default,
-  $user_domain_name               = $::os_service_default,
-  $project_domain_name            = $::os_service_default,
-  $system_scope                   = $::os_service_default,
-  $insecure                       = $::os_service_default,
-  $auth_section                   = $::os_service_default,
-  $auth_type                      = $::os_service_default,
-  $www_authenticate_uri           = $::os_service_default,
-  $auth_version                   = $::os_service_default,
-  $cache                          = $::os_service_default,
-  $cafile                         = $::os_service_default,
-  $certfile                       = $::os_service_default,
-  $collect_timing                 = $::os_service_default,
-  $delay_auth_decision            = $::os_service_default,
-  $enforce_token_bind             = $::os_service_default,
-  $http_connect_timeout           = $::os_service_default,
-  $http_request_max_retries       = $::os_service_default,
-  $include_service_catalog        = $::os_service_default,
-  $keyfile                        = $::os_service_default,
-  $memcache_pool_conn_get_timeout = $::os_service_default,
-  $memcache_pool_dead_retry       = $::os_service_default,
-  $memcache_pool_maxsize          = $::os_service_default,
-  $memcache_pool_socket_timeout   = $::os_service_default,
-  $memcache_pool_unused_timeout   = $::os_service_default,
-  $memcache_secret_key            = $::os_service_default,
-  $memcache_security_strategy     = $::os_service_default,
-  $memcache_use_advanced_pool     = $::os_service_default,
-  $memcached_servers              = $::os_service_default,
-  $region_name                    = $::os_service_default,
-  $token_cache_time               = $::os_service_default,
-  $manage_memcache_package        = false,
-  $service_token_roles            = $::os_service_default,
-  $service_token_roles_required   = $::os_service_default,
-  $service_type                   = $::os_service_default,
-  $interface                      = $::os_service_default,
+  $project_name                    = $facts['os_service_default'],
+  $user_domain_name                = $facts['os_service_default'],
+  $project_domain_name             = $facts['os_service_default'],
+  $system_scope                    = $facts['os_service_default'],
+  $insecure                        = $facts['os_service_default'],
+  $auth_section                    = $facts['os_service_default'],
+  $auth_type                       = $facts['os_service_default'],
+  $www_authenticate_uri            = $facts['os_service_default'],
+  $auth_version                    = $facts['os_service_default'],
+  $cache                           = $facts['os_service_default'],
+  $cafile                          = $facts['os_service_default'],
+  $certfile                        = $facts['os_service_default'],
+  $collect_timing                  = $facts['os_service_default'],
+  $delay_auth_decision             = $facts['os_service_default'],
+  $enforce_token_bind              = $facts['os_service_default'],
+  $http_connect_timeout            = $facts['os_service_default'],
+  $http_request_max_retries        = $facts['os_service_default'],
+  $include_service_catalog         = $facts['os_service_default'],
+  $keyfile                         = $facts['os_service_default'],
+  $memcache_pool_conn_get_timeout  = $facts['os_service_default'],
+  $memcache_pool_dead_retry        = $facts['os_service_default'],
+  $memcache_pool_maxsize           = $facts['os_service_default'],
+  $memcache_pool_socket_timeout    = $facts['os_service_default'],
+  $memcache_pool_unused_timeout    = $facts['os_service_default'],
+  $memcache_secret_key             = $facts['os_service_default'],
+  $memcache_security_strategy      = $facts['os_service_default'],
+  $memcache_use_advanced_pool      = $facts['os_service_default'],
+  $memcached_servers               = $facts['os_service_default'],
+  $region_name                     = $facts['os_service_default'],
+  $token_cache_time                = $facts['os_service_default'],
+  Boolean $manage_memcache_package = false,
+  $service_token_roles             = $facts['os_service_default'],
+  $service_token_roles_required    = $facts['os_service_default'],
+  $service_type                    = $facts['os_service_default'],
+  $interface                       = $facts['os_service_default'],
 ) {
 
   include keystone::params
   include keystone::deps
-
-  if !is_service_default($include_service_catalog) {
-    validate_legacy(Boolean, 'validate_bool', $include_service_catalog)
-  }
-
-  if !is_service_default($memcache_use_advanced_pool) {
-    validate_legacy(Boolean, 'validate_bool', $memcache_use_advanced_pool)
-  }
 
   if !is_service_default($memcache_security_strategy) {
     if !(downcase($memcache_security_strategy) in ['none', 'mac', 'encrypt']){
@@ -287,10 +279,6 @@ define keystone::resource::authtoken(
     if downcase($memcache_security_strategy) != 'none' and is_service_default($memcache_secret_key) {
       fail('memcache_secret_key is required when memcache_security_strategy is not None')
     }
-  }
-
-  if !is_service_default($delay_auth_decision) {
-    validate_legacy(Boolean, 'validate_bool', $delay_auth_decision)
   }
 
   if !is_service_default($memcached_servers) and !empty($memcached_servers){

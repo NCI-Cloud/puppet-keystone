@@ -295,8 +295,8 @@ define keystone::ldap_backend(
   $auth_pool_size                       = undef,
   $auth_pool_connection_lifetime        = undef,
   $package_ensure                       = present,
-  $manage_packages                      = true,
-  $create_domain_entry                  = false,
+  Boolean $manage_packages              = true,
+  Boolean $create_domain_entry          = false,
 ) {
 
   include keystone::deps

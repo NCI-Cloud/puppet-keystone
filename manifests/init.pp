@@ -389,74 +389,74 @@
 # Copyright 2012 Puppetlabs Inc, unless otherwise noted.
 #
 class keystone(
-  $package_ensure                       = 'present',
-  $client_package_ensure                = 'present',
-  $log_dir                              = undef,
-  $log_file                             = undef,
-  $catalog_driver                       = false,
-  $catalog_template_file                = '/etc/keystone/default_catalog.templates',
-  $token_provider                       = 'fernet',
-  $token_expiration                     = 3600,
-  $password_hash_algorithm              = $::os_service_default,
-  $password_hash_rounds                 = $::os_service_default,
-  $revoke_driver                        = $::os_service_default,
-  $revoke_by_id                         = true,
-  $public_endpoint                      = $::os_service_default,
-  $enable_ssl                           = false,
-  $ssl_certfile                         = '/etc/keystone/ssl/certs/keystone.pem',
-  $ssl_keyfile                          = '/etc/keystone/ssl/private/keystonekey.pem',
-  $ssl_ca_certs                         = '/etc/keystone/ssl/certs/ca.pem',
-  $ssl_ca_key                           = '/etc/keystone/ssl/private/cakey.pem',
-  $ssl_cert_subject                     = '/C=US/ST=Unset/L=Unset/O=Unset/CN=localhost',
-  $manage_service                       = true,
-  $enabled                              = true,
-  $rabbit_heartbeat_timeout_threshold   = $::os_service_default,
-  $rabbit_heartbeat_rate                = $::os_service_default,
-  $rabbit_heartbeat_in_pthread          = $::os_service_default,
-  $rabbit_use_ssl                       = $::os_service_default,
-  $default_transport_url                = $::os_service_default,
-  $rabbit_ha_queues                     = $::os_service_default,
-  $kombu_ssl_ca_certs                   = $::os_service_default,
-  $kombu_ssl_certfile                   = $::os_service_default,
-  $kombu_ssl_keyfile                    = $::os_service_default,
-  $kombu_ssl_version                    = $::os_service_default,
-  $kombu_reconnect_delay                = $::os_service_default,
-  $kombu_failover_strategy              = $::os_service_default,
-  $kombu_compression                    = $::os_service_default,
-  $notification_transport_url           = $::os_service_default,
-  $notification_driver                  = $::os_service_default,
-  $notification_topics                  = $::os_service_default,
-  $notification_format                  = $::os_service_default,
-  $notification_opt_out                 = $::os_service_default,
-  $control_exchange                     = $::os_service_default,
-  $rpc_response_timeout                 = $::os_service_default,
-  $service_name                         = $::keystone::params::service_name,
-  $max_token_size                       = $::os_service_default,
-  $sync_db                              = true,
-  $enable_fernet_setup                  = true,
-  $fernet_key_repository                = '/etc/keystone/fernet-keys',
-  $fernet_max_active_keys               = $::os_service_default,
-  $fernet_keys                          = false,
-  $fernet_replace_keys                  = true,
-  $enable_credential_setup              = true,
-  $credential_key_repository            = '/etc/keystone/credential-keys',
-  $credential_keys                      = false,
-  $default_domain                       = undef,
-  $policy_driver                        = $::os_service_default,
-  $using_domain_config                  = false,
-  $domain_config_directory              = '/etc/keystone/domains',
-  $keystone_user                        = $::keystone::params::keystone_user,
-  $keystone_group                       = $::keystone::params::keystone_group,
-  $manage_policyrcd                     = false,
-  $enable_proxy_headers_parsing         = $::os_service_default,
-  $max_request_body_size                = $::os_service_default,
-  $purge_config                         = false,
-  $amqp_durable_queues                  = $::os_service_default,
+  $package_ensure                                 = 'present',
+  $log_dir                                        = undef,
+  $log_file                                       = undef,
+  $catalog_driver                                 = $facts['os_service_default'],
+  $catalog_template_file                          = '/etc/keystone/default_catalog.templates',
+  $token_provider                                 = 'fernet',
+  $token_expiration                               = 3600,
+  $password_hash_algorithm                        = $facts['os_service_default'],
+  $password_hash_rounds                           = $facts['os_service_default'],
+  $revoke_driver                                  = $facts['os_service_default'],
+  $revoke_by_id                                   = true,
+  $public_endpoint                                = $facts['os_service_default'],
+  $ssl_certfile                                   = '/etc/keystone/ssl/certs/keystone.pem',
+  $ssl_keyfile                                    = '/etc/keystone/ssl/private/keystonekey.pem',
+  $ssl_ca_certs                                   = '/etc/keystone/ssl/certs/ca.pem',
+  $ssl_ca_key                                     = '/etc/keystone/ssl/private/cakey.pem',
+  $ssl_cert_subject                               = '/C=US/ST=Unset/L=Unset/O=Unset/CN=localhost',
+  Boolean $manage_service                         = true,
+  Boolean $enabled                                = true,
+  $rabbit_heartbeat_timeout_threshold             = $facts['os_service_default'],
+  $rabbit_heartbeat_rate                          = $facts['os_service_default'],
+  $rabbit_heartbeat_in_pthread                    = $facts['os_service_default'],
+  $rabbit_use_ssl                                 = $facts['os_service_default'],
+  $default_transport_url                          = $facts['os_service_default'],
+  $rabbit_ha_queues                               = $facts['os_service_default'],
+  $kombu_ssl_ca_certs                             = $facts['os_service_default'],
+  $kombu_ssl_certfile                             = $facts['os_service_default'],
+  $kombu_ssl_keyfile                              = $facts['os_service_default'],
+  $kombu_ssl_version                              = $facts['os_service_default'],
+  $kombu_reconnect_delay                          = $facts['os_service_default'],
+  $kombu_failover_strategy                        = $facts['os_service_default'],
+  $kombu_compression                              = $facts['os_service_default'],
+  $notification_transport_url                     = $facts['os_service_default'],
+  $notification_driver                            = $facts['os_service_default'],
+  $notification_topics                            = $facts['os_service_default'],
+  $notification_format                            = $facts['os_service_default'],
+  $notification_opt_out                           = $facts['os_service_default'],
+  $control_exchange                               = $facts['os_service_default'],
+  $executor_thread_pool_size                      = $facts['os_service_default'],
+  $rpc_response_timeout                           = $facts['os_service_default'],
+  $service_name                                   = $::keystone::params::service_name,
+  $max_token_size                                 = $facts['os_service_default'],
+  Boolean $sync_db                                = true,
+  Boolean $enable_fernet_setup                    = true,
+  Stdlib::Absolutepath $fernet_key_repository     = '/etc/keystone/fernet-keys',
+  $fernet_max_active_keys                         = $facts['os_service_default'],
+  Optional[Hash] $fernet_keys                     = undef,
+  $fernet_replace_keys                            = true,
+  Boolean $enable_credential_setup                = true,
+  Stdlib::Absolutepath $credential_key_repository = '/etc/keystone/credential-keys',
+  Optional[Hash] $credential_keys                 = undef,
+  $default_domain                                 = undef,
+  $policy_driver                                  = $facts['os_service_default'],
+  Boolean $using_domain_config                    = false,
+  Stdlib::Absolutepath $domain_config_directory   = '/etc/keystone/domains',
+  $keystone_user                                  = $::keystone::params::user,
+  $keystone_group                                 = $::keystone::params::group,
+  Boolean $manage_policyrcd                       = false,
+  $enable_proxy_headers_parsing                   = $facts['os_service_default'],
+  $max_request_body_size                          = $facts['os_service_default'],
+  $purge_config                                   = false,
+  $amqp_durable_queues                            = $facts['os_service_default'],
   # DEPRECATED PARAMETERS
-  $member_role_id                       = undef,
-  $member_role_name                     = undef,
-  $admin_endpoint                       = undef,
-  $catalog_type                         = undef,
+  $member_role_id                                 = undef,
+  $member_role_name                               = undef,
+  $admin_endpoint                                 = undef,
+  $catalog_type                                   = undef,
+  $client_package_ensure                          = undef,
 ) inherits keystone::params {
 
   include keystone::deps
@@ -465,9 +465,8 @@ class keystone(
 
   if $catalog_type != undef {
     warning('The catalog_type parameter is deprecated. Use the catalog_driver parameter instead.')
-    if ! $catalog_driver {
-      validate_legacy(Enum['template', 'sql'], 'validate_re', $catalog_type)
-    }
+  if $client_package_ensure != undef {
+    warning('The client_package_ensure parameter is deprecated and has no effect.')
   }
 
   if $manage_policyrcd {
@@ -670,7 +669,6 @@ running as a standalone service, or httpd for being run by a httpd server")
 
   # Fernet tokens support
   if $enable_fernet_setup {
-    validate_legacy(String, 'validate_string', $fernet_key_repository)
     ensure_resource('file', $fernet_key_repository, {
       ensure    => 'directory',
       owner     => $keystone_user,
@@ -679,8 +677,7 @@ running as a standalone service, or httpd for being run by a httpd server")
       subscribe => Anchor['keystone::install::end'],
     })
 
-  if $fernet_keys {
-      validate_legacy(Hash, 'validate_hash', $fernet_keys)
+    if $fernet_keys {
       create_resources('file', $fernet_keys, {
           'owner'     => $keystone_user,
           'group'     => $keystone_group,
@@ -708,7 +705,6 @@ running as a standalone service, or httpd for being run by a httpd server")
 
   # Credential support
   if $enable_credential_setup {
-    validate_legacy(String, 'validate_string', $credential_key_repository)
     ensure_resource('file', $credential_key_repository, {
       ensure    => 'directory',
       owner     => $keystone_user,
@@ -718,7 +714,6 @@ running as a standalone service, or httpd for being run by a httpd server")
     })
 
     if $credential_keys {
-      validate_legacy(Hash, 'validate_hash', $credential_keys)
       create_resources('file', $credential_keys, {
           'owner'     => $keystone_user,
           'group'     => $keystone_group,
@@ -793,24 +788,26 @@ running as a standalone service, or httpd for being run by a httpd server")
   }
 
   if $using_domain_config {
-    validate_legacy(Stdlib::Absolutepath, 'validate_absolute_path', $domain_config_directory)
+    file { $domain_config_directory:
+      ensure  => directory,
+      owner   => $keystone_user,
+      group   => $keystone_group,
+      mode    => '0750',
+      require => Anchor['keystone::install::end'],
+    }
 
-    # Better than ensure resource.  We don't want to conflict with any
-    # user definition even if they don't match exactly our parameters.
-    # The error catching mechanism in the provider will remind them if
-    # they did something silly, like defining a file rather than a
-    # directory.  For the permission it's their choice.
-    if (!defined(File[$domain_config_directory])) {
-      file { $domain_config_directory:
-        ensure  => directory,
-        owner   => $keystone_user,
-        group   => $keystone_group,
-        mode    => '0750',
-        require => Anchor['keystone::install::end'],
-      }
-      if $manage_service {
-        File[$domain_config_directory] ~> Service[$service_name]
-      }
+    if $manage_service {
+      File[$domain_config_directory] ~> Service[$service_name]
+    }
+
+    keystone_config {
+      'identity/domain_specific_drivers_enabled': value => true;
+      'identity/domain_config_dir':               value => $domain_config_directory;
+    }
+  } else {
+    keystone_config {
+      'identity/domain_specific_drivers_enabled': ensure => absent;
+      'identity/domain_config_dir':               ensure => absent;
     }
     # Here we want the creation to fail if the user has created those
     # resources with different values. That means that the user

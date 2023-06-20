@@ -71,7 +71,7 @@ class keystone::bootstrap (
   $internal_url         = undef,
   $region               = 'RegionOne',
   $interface            = 'public',
-  $bootstrap            = true,
+  Boolean $bootstrap    = true,
 ) inherits keystone::params {
 
   include keystone::deps

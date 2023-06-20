@@ -40,9 +40,9 @@ class keystone::federation::mellon (
   $methods,
   $idp_name,
   $protocol_name,
-  $template_order = 331,
-  $package_ensure = present,
-  $enable_websso  = false,
+  $package_ensure        = present,
+  $template_order        = 331,
+  Boolean $enable_websso = false,
 ) {
 
   include apache
@@ -62,8 +62,6 @@ Apache + Mellon SP setups, where a REMOTE_USER env variable is always set, even 
   if !('saml2' in $methods ) {
     fail('Methods should contain saml2 as one of the auth methods.')
   }
-
-  validate_legacy(Boolean, 'validate_bool', $enable_websso)
 
   keystone_config {
     'auth/methods': value  => join(any2array($methods),',');

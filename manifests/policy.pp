@@ -42,9 +42,9 @@
 #    Defaults to false.
 #
 class keystone::policy (
-  $enforce_scope        = $::os_service_default,
-  $enforce_new_defaults = $::os_service_default,
-  $policies             = {},
+  $enforce_scope        = $facts['os_service_default'],
+  $enforce_new_defaults = $facts['os_service_default'],
+  Hash $policies        = {},
   $policy_path          = '/etc/keystone/policy.yaml',
   $policy_dirs          = $::os_service_default,
   $purge_config         = false,
@@ -52,8 +52,6 @@ class keystone::policy (
 
   include keystone::deps
   include keystone::params
-
-  validate_legacy(Hash, 'validate_hash', $policies)
 
   $policy_parameters = {
     policies     => $policies,
