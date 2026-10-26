@@ -15,7 +15,9 @@
 #
 # [*catalog_driver*]
 #   (Optional) Catalog driver used by Keystone to store endpoints and services.
-#   Defaults to false.
+#   One of 'sql' or 'templated'; 'template' is also accepted as an alias for
+#   'templated'
+#   Defaults to 'sql'.
 #
 # [*catalog_template_file*]
 #   (Optional) Path to the catalog used if 'templated' catalog driver is used.
@@ -393,7 +395,7 @@ class keystone(
   $client_package_ensure                          = 'present',
   $log_dir                                        = undef,
   $log_file                                       = undef,
-  $catalog_driver                                 = $facts['os_service_default'],
+  Enum['sql', 'template', 'templated'] $catalog_driver = 'sql',
   $catalog_template_file                          = '/etc/keystone/default_catalog.templates',
   $token_provider                                 = 'fernet',
   $token_expiration                               = 3600,
@@ -568,14 +570,11 @@ class keystone(
   }
 
   # configure based on the catalog backend
-  if $catalog_driver {
-    $catalog_driver_real = $catalog_driver
-  }
-  elsif ($catalog_type == 'template') {
+  if ($catalog_type == 'template') {
     $catalog_driver_real = 'templated'
   }
   else {
-    $catalog_driver_real = 'sql'
+    $catalog_driver_real = $catalog_driver
   }
 
   keystone_config {
