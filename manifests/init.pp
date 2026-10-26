@@ -390,6 +390,7 @@
 #
 class keystone(
   $package_ensure                                 = 'present',
+  $client_package_ensure                          = 'present',
   $log_dir                                        = undef,
   $log_file                                       = undef,
   $catalog_driver                                 = $facts['os_service_default'],
@@ -401,6 +402,7 @@ class keystone(
   $revoke_driver                                  = $facts['os_service_default'],
   $revoke_by_id                                   = true,
   $public_endpoint                                = $facts['os_service_default'],
+  Boolean $enable_ssl                             = false,
   $ssl_certfile                                   = '/etc/keystone/ssl/certs/keystone.pem',
   $ssl_keyfile                                    = '/etc/keystone/ssl/private/keystonekey.pem',
   $ssl_ca_certs                                   = '/etc/keystone/ssl/certs/ca.pem',
@@ -444,8 +446,8 @@ class keystone(
   $policy_driver                                  = $facts['os_service_default'],
   Boolean $using_domain_config                    = false,
   Stdlib::Absolutepath $domain_config_directory   = '/etc/keystone/domains',
-  $keystone_user                                  = $::keystone::params::user,
-  $keystone_group                                 = $::keystone::params::group,
+  $keystone_user                                  = $::keystone::params::keystone_user,
+  $keystone_group                                 = $::keystone::params::keystone_group,
   Boolean $manage_policyrcd                       = false,
   $enable_proxy_headers_parsing                   = $facts['os_service_default'],
   $max_request_body_size                          = $facts['os_service_default'],
@@ -456,7 +458,6 @@ class keystone(
   $member_role_name                               = undef,
   $admin_endpoint                                 = undef,
   $catalog_type                                   = undef,
-  $client_package_ensure                          = undef,
 ) inherits keystone::params {
 
   include keystone::deps
@@ -465,8 +466,6 @@ class keystone(
 
   if $catalog_type != undef {
     warning('The catalog_type parameter is deprecated. Use the catalog_driver parameter instead.')
-  if $client_package_ensure != undef {
-    warning('The client_package_ensure parameter is deprecated and has no effect.')
   }
 
   if $manage_policyrcd {
@@ -474,7 +473,7 @@ class keystone(
     Policy_rcd <| title == 'keystone' |> -> Package['keystone']
     Policy_rcd['apache2'] -> Package['httpd']
     # we don't have keystone service anymore starting from Newton
-    if ($::operatingsystem == 'Ubuntu') and (versioncmp($::operatingsystemmajrelease, '16') >= 0) {
+    if ($facts['os']['name'] == 'Ubuntu') and (versioncmp($facts['os']['release']['major'], '16') >= 0) {
       $policy_services = 'apache2'
     } else {
       $policy_services = ['keystone', 'apache2']
@@ -517,7 +516,7 @@ class keystone(
   }
 
   resources { 'keystone_config':
-    purge  => $purge_config,
+    purge => $purge_config,
   }
 
   # Endpoint configuration
@@ -545,21 +544,21 @@ class keystone(
   # ssl config
   if ($enable_ssl) {
     keystone_config {
-      'ssl/enable':       value  => true;
-      'ssl/certfile':     value  => $ssl_certfile;
-      'ssl/keyfile':      value  => $ssl_keyfile;
-      'ssl/ca_certs':     value  => $ssl_ca_certs;
-      'ssl/ca_key':       value  => $ssl_ca_key;
-      'ssl/cert_subject': value  => $ssl_cert_subject;
+      'ssl/enable':       value => true;
+      'ssl/certfile':     value => $ssl_certfile;
+      'ssl/keyfile':      value => $ssl_keyfile;
+      'ssl/ca_certs':     value => $ssl_ca_certs;
+      'ssl/ca_key':       value => $ssl_ca_key;
+      'ssl/cert_subject': value => $ssl_cert_subject;
     }
   } else {
     keystone_config {
-      'ssl/enable':       value  => false;
-      'ssl/certfile':     value  => $::os_service_default;
-      'ssl/keyfile':      value  => $::os_service_default;
-      'ssl/ca_certs':     value  => $::os_service_default;
-      'ssl/ca_key':       value  => $::os_service_default;
-      'ssl/cert_subject': value  => $::os_service_default;
+      'ssl/enable':       value => false;
+      'ssl/certfile':     value => $facts['os_service_default'];
+      'ssl/keyfile':      value => $facts['os_service_default'];
+      'ssl/ca_certs':     value => $facts['os_service_default'];
+      'ssl/ca_key':       value => $facts['os_service_default'];
+      'ssl/cert_subject': value => $facts['os_service_default'];
     }
   }
 
@@ -643,7 +642,7 @@ class keystone(
 
         # Note: Debian uses uwsgi if using keystone service, which isn't deprecated
         # and therefore, no warning should be displayed.
-        if $service_name == $::keystone::params::service_name and $::operatingsystem != 'Debian'{
+        if $service_name == $::keystone::params::service_name and $facts['os']['name'] != 'Debian'{
           warning("Keystone under Eventlet has been deprecated during the Kilo cycle. \
 Support for deploying under eventlet will be dropped as of the M-release of OpenStack.")
         }
